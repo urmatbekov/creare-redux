@@ -1,35 +1,28 @@
-import React, {Component} from 'react';
-import {connect} from "../redux/react-redux";
+import React,{useEffect} from 'react';
+import {connect} from "react-redux";
+import {getProduct} from "../reduce/products";
 
-class App extends Component {
-    render() {
-        return (
-            <div>
 
-                <button onClick={this.props.addNumber}>+</button>
-                {this.props.number}
-                <button onClick={this.props.minusNumber}>-</button>
-                <p>
-                    modal
-                </p>
-            </div>
-        );
-    }
+const App = ({getProduct, products}) => {
+
+    useEffect(()=>{
+        getProduct()
+    },[])
+
+    const {data: {results}} = products
+    return (
+        <div>
+            {results.map((item) => {
+                return <div key={item.id}><h2>{item.title}</h2></div>
+            })}
+        </div>
+    );
 }
 
-const mapStateToProps = (state) => {
-    return state
+
+const mapStateToProps = ({products}) => {
+    return {products}
 }
 
-const mapActionToProps = (dispatch) => {
-    return {
-        addNumber: () => {
-            dispatch({type: "add"})
-        },
-        minusNumber: () => {
-            dispatch({type: "minus"})
-        },
-    }
-}
 
-export default connect(mapStateToProps, mapActionToProps)(App);
+export default connect(mapStateToProps, {getProduct})(App);
